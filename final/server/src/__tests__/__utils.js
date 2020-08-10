@@ -1,3 +1,4 @@
+const express = require('express');
 const { HttpLink } = require('apollo-link-http');
 const fetch = require('node-fetch');
 const { execute, toPromise } = require('apollo-link');
@@ -40,14 +41,14 @@ module.exports.constructTestServer = constructTestServer;
 
 const startTestServer = async server => {
   // if using apollo-server-express...
-  // const app = express();
-  // server.applyMiddleware({ app });
-  // const httpServer = await app.listen(0);
+  const app = express();
+  server.applyMiddleware({ app });
+  const httpServer = await app.listen(0);
 
-  const httpServer = await server.listen({ port: 0 });
+  //const httpServer = await server.listen({ port: 0 });
 
   const link = new HttpLink({
-    uri: `http://localhost:${httpServer.port}`,
+    uri: `http://localhost:${httpServer.address().port}/graphql`,
     fetch,
   });
 
@@ -56,7 +57,7 @@ const startTestServer = async server => {
 
   return {
     link,
-    stop: () => httpServer.server.close(),
+    stop: done => httpServer.close(done),
     graphql: executeOperation,
   };
 };

@@ -38,7 +38,7 @@ describe('Server - e2e', () => {
 
   beforeEach(async () => {
     const testServer = await startTestServer(server);
-    stop = testServer.stop;
+    stop = await testServer.stop;
     graphql = testServer.graphql;
   });
 

@@ -1,6 +1,8 @@
 require('dotenv').config();
 
-const { ApolloServer } = require('apollo-server');
+const express = require('express');
+const { ApolloServer } = require('apollo-server-express');
+
 const isEmail = require('isemail');
 
 const typeDefs = require('./schema');
@@ -50,15 +52,12 @@ const server = new ApolloServer({
   },
 });
 
-// Start our server if we're not in a test env.
-// if we're in a test env, we'll manually start it in a test
-if (process.env.NODE_ENV !== 'test') {
-  server
-    .listen({ port: process.env.PORT || 4000 })
-    .then(({ url }) => {
-      console.log(`🚀 app running at ${url}`)
-    });
-}
+const PORT = 3000;
+
+const app = express();
+server.applyMiddleware({ app });
+
+//app.listen(PORT);
 
 // export all the important pieces for integration/e2e tests to use
 module.exports = {
